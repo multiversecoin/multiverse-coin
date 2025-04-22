@@ -12,12 +12,12 @@ class MoedaMultiversoApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: HomePage(),
+      home: PaginaInicial(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class PaginaInicial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,10 +28,8 @@ class HomePage extends StatelessWidget {
         child: Text(
           'Bem-vindo à moeda digital de Moema!',
           style: TextStyle(fontSize: 20),
-          textAlign: TextAlign.center,
         ),
       ),
     );
   }
 }
-
