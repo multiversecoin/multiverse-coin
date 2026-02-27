@@ -49,7 +49,7 @@ class ChatResponse(BaseModel):
 # MIA Chat Endpoint
 # ============================================================
 @app.post("/api/mia/chat", response_model=ChatResponse)
-async def mia_chat(request: ChatRequest):
+def mia_chat(request: ChatRequest):
     """Endpoint principal do chat com a MIA."""
     messages = [{"role": m.role, "content": m.content} for m in request.messages]
     response = chat_with_mia(
