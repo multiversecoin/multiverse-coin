@@ -221,7 +221,7 @@ def chat_with_mia(
 
     # Build system message with optional location context
     system_msg = MIA_SYSTEM_PROMPT
-    if user_lat and user_lng:
+    if user_lat is not None and user_lng is not None:
         system_msg += f"\n\nLocalizacao atual do usuario: lat={user_lat}, lng={user_lng}. Use getNearbyOffers para sugerir ofertas proximas quando relevante."
 
     # Prepare messages for API
