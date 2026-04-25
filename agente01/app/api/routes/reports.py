@@ -98,6 +98,12 @@ async def approve_report(
         report.signature = signature
     elif report.docx_storage_key:
         docx_data = download_file(report.docx_storage_key)
+        computed_hash = compute_sha256_from_bytes(docx_data)
+        if computed_hash != report.docx_sha256:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Integridade do DOCX comprometida. Hash não confere.",
+            )
         signature = sign_data(docx_data)
         report.signature = signature
 

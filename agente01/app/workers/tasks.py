@@ -143,7 +143,10 @@ def generate_report_task(self, report_id: str, operation_id: str, user_id: str):
 
         except Exception as exc:
             logger.exception(f"Report generation failed: {exc}")
-            if report:
-                report.status = "failed"
-                db.commit()
+            try:
+                if report:
+                    report.status = "failed"
+                    db.commit()
+            except UnboundLocalError:
+                pass
             raise self.retry(exc=exc, countdown=30)
