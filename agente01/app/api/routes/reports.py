@@ -49,6 +49,7 @@ async def generate_report(
     db.add(report)
     await db.flush()
     await db.refresh(report)
+    await db.commit()
 
     from app.workers.tasks import generate_report_task
     task = generate_report_task.delay(
@@ -76,6 +77,7 @@ async def approve_report(
         select(Report)
         .where(Report.operation_id == operation_id, Report.status == "ready")
         .order_by(Report.created_at.desc())
+        .limit(1)
     )
     report = result.scalar_one_or_none()
     if not report:
@@ -130,6 +132,7 @@ async def download_report(
         select(Report)
         .where(Report.operation_id == operation_id, Report.status.in_(["ready", "approved"]))
         .order_by(Report.created_at.desc())
+        .limit(1)
     )
     report = result.scalar_one_or_none()
     if not report:
@@ -180,6 +183,7 @@ async def verify_report(
         select(Report)
         .where(Report.operation_id == operation_id)
         .order_by(Report.created_at.desc())
+        .limit(1)
     )
     report = result.scalar_one_or_none()
     if not report:
@@ -207,6 +211,12 @@ async def verify_report(
         try:
             pdf_data = download_file(report.pdf_storage_key)
             sig_ok = verify_signature(pdf_data, report.signature)
+        except Exception:
+            sig_ok = False
+    elif report.signature and report.docx_storage_key:
+        try:
+            docx_data = download_file(report.docx_storage_key)
+            sig_ok = verify_signature(docx_data, report.signature)
         except Exception:
             sig_ok = False
 
